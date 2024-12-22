@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הסכם שיווק השקעות | מובנה</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/premium-styles.css" rel="stylesheet">
+    <link href="/css/section-styles.css" rel="stylesheet">
+    <link href="/css/signature.css" rel="stylesheet">
+    <link href="/css/accordion.css" rel="stylesheet">
+    <link href="/css/debug-styles.css" rel="stylesheet">
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-storage-compat.js"></script>
+</head>
+<body>
+    <div class="form-container">
+        <!-- Header -->
+        <header class="form-header">
+            <img src="/images/logo.png" alt="מובנה" class="logo">
+            <h1>הסכם שיווק השקעות חד פעמי למוצרים מובנים</h1>
+        </header>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">פרטים אישיים</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">פרטי השקעה</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">שאלון סיכון</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-circle">4</div>
+                    <div class="step-label">הצהרות</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Form -->
+        <form id="mainForm" class="form-content">
+            <!-- Section 1: Personal Details -->
+            <div class="form-section active" id="section1">
+                <h2 class="section-title">פרטים אישיים</h2>
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label>שם פרטי</label>
+                        <input type="text" name="firstName" required>
+                    </div>
+                    <div class="input-group">
+                        <label>שם משפחה</label>
+                        <input type="text" name="lastName" required>
+                    </div>
+                    <div class="input-group">
+                        <label>תעודת זהות</label>
+                        <input type="text" name="idNumber" pattern="\d{9}" required>
+                    </div>
+                    <div class="input-group">
+                        <label>דוא"ל</label>
+                        <input type="email" name="email" required>
+                    </div>
+                    <div class="input-group">
+                        <label>טלפון נייד</label>
+                        <input type="tel" name="phone" pattern="[0-9]{10}" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Investment Details -->
+            <div class="form-section" id="section2">
+                <!-- תוכן יתווסף בהמשך -->
+            </div>
+
+            <!-- Section 3: Risk Assessment -->
+            <div class="form-section" id="section3">
+                <!-- תוכן יתווסף בהמשך -->
+            </div>
+
+            <!-- Section 4: Declarations -->
+            <div class="form-section" id="section4">
+                <!-- תוכן יתווסף בהמשך -->
+            </div>
+        </form>
+
+        <!-- Navigation -->
+        <div class="form-navigation">
+            <button type="button" id="prevBtn" class="btn-prev">חזור</button>
+            <button type="button" id="nextBtn" class="btn-next">המשך</button>
+            <button type="button" id="submitBtn" class="btn-submit" style="display:none;">שלח טופס</button>
+        </div>
+    </div>
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- Application Scripts -->
+    <script src="/js/debugSystem.js"></script>
+    <script src="/js/firebaseConfig.js"></script>
+    <script src="/js/signatureSystem.js"></script>
+    <script src="/js/pdfGenerator.js"></script>
+    <script src="/js/validation.js"></script>
+    <script src="/js/formHandler.js"></script>
+</body>
+</html>
