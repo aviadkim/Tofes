@@ -5,42 +5,198 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>הסכם שיווק השקעות | מובנה</title>
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Styles -->
-    <link href="/css/styles.css" rel="stylesheet">
-    <link href="/css/premium-styles.css" rel="stylesheet">
-    <link href="/css/section-styles.css" rel="stylesheet">
-    <link href="/css/signature.css" rel="stylesheet">
-    <link href="/css/accordion.css" rel="stylesheet">
-    <link href="/css/debug-styles.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2558e5;
+            --primary-light: #eef3ff;
+            --dark-blue: #1e2c4f;
+            --light-gray: #f8fafc;
+            --border-gray: #e2e8f0;
+            --success-color: #4CAF50;
+        }
 
-    <!-- Firebase Scripts -->
-    <!-- סדר הטעינה החדש בסוף הדף -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-storage-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    <!-- הספריות שלנו -->
-    <script src="/js/debugSystem.js"></script>
-    <script src="/js/firebaseConfig.js"></script>
-    <script src="/js/signatureSystem.js"></script>
-    <script src="/js/validation.js"></script>
-    <script src="/js/pdfGenerator.js"></script>
-    <script src="/js/formHandler.js"></script>
+        body {
+            font-family: 'Assistant', sans-serif;
+            background: var(--light-gray);
+            color: var(--dark-blue);
+            line-height: 1.6;
+        }
+
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: white;
+        }
+
+        /* Header & Logo */
+        .form-header {
+            text-align: center;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            background: white;
+        }
+
+        .logo {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        /* Progress Steps - קבוע בראש העמוד */
+        .progress-container {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--border-gray);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--border-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-circle {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: var(--dark-blue);
+        }
+
+        /* Form Sections */
+        .form-section {
+            margin-bottom: 4rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--dark-blue);
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        /* Form Groups */
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        /* Submit Button - קבוע בתחתית */
+        .submit-container {
+            position: sticky;
+            bottom: 2rem;
+            background: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
+
+        .submit-button {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background: var(--dark-blue);
+        }
+
+        /* Intersection Observer Helper */
+        .section-observer {
+            height: 1px;
+            margin: 0;
+            padding: 0;
+            visibility: hidden;
+        }
+    </style>
 </head>
 <body>
     <div class="form-container">
-        <!-- Header -->
         <header class="form-header">
-            <img src="/images/logo.png" alt="מובנה" class="logo">
-            <h1>הסכם שיווק השקעות חד פעמי למוצרים מובנים</h1>
+            <img src="images/movne-logo.png" alt="מובנה לוגו" class="logo">
+            <h1>טופס הסכם שיווק השקעות</h1>
         </header>
 
-        <!-- Progress Bar -->
         <div class="progress-container">
             <div class="progress-steps">
                 <div class="step active" data-step="1">
@@ -53,7 +209,7 @@
                 </div>
                 <div class="step" data-step="3">
                     <div class="step-circle">3</div>
-                    <div class="step-label">שאלון סיכון</div>
+                    <div class="step-label">הערכת סיכון</div>
                 </div>
                 <div class="step" data-step="4">
                     <div class="step-circle">4</div>
@@ -62,69 +218,142 @@
             </div>
         </div>
 
-        <!-- Main Form -->
-        <form id="mainForm" class="form-content">
-            <!-- Section 1: Personal Details -->
-            <div class="form-section active" id="section1">
+        <form id="investmentForm">
+            <!-- חלק 1: פרטים אישיים -->
+            <div class="section-observer" data-section="1"></div>
+            <section id="section1" class="form-section">
                 <h2 class="section-title">פרטים אישיים</h2>
-                <div class="grid-2">
-                    <div class="input-group">
-                        <label>שם פרטי</label>
-                        <input type="text" name="firstName" required>
-                    </div>
-                    <div class="input-group">
-                        <label>שם משפחה</label>
-                        <input type="text" name="lastName" required>
-                    </div>
-                    <div class="input-group">
-                        <label>תעודת זהות</label>
-                        <input type="text" name="idNumber" pattern="\d{9}" required>
-                    </div>
-                    <div class="input-group">
-                        <label>דוא"ל</label>
-                        <input type="email" name="email" required>
-                    </div>
-                    <div class="input-group">
-                        <label>טלפון נייד</label>
-                        <input type="tel" name="phone" pattern="[0-9]{10}" required>
-                    </div>
+                
+                <div class="input-group">
+                    <label for="firstName">שם פרטי</label>
+                    <input type="text" id="firstName" name="firstName" required>
                 </div>
-            </div>
 
-            <!-- Section 2: Investment Details -->
-            <div class="form-section" id="section2">
-                <!-- תוכן יתווסף בהמשך -->
-            </div>
+                <div class="input-group">
+                    <label for="lastName">שם משפחה</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
 
-            <!-- Section 3: Risk Assessment -->
-            <div class="form-section" id="section3">
-                <!-- תוכן יתווסף בהמשך -->
-            </div>
+                <div class="input-group">
+                    <label for="idNumber">תעודת זהות</label>
+                    <input type="text" id="idNumber" name="idNumber" required pattern="[0-9]{9}">
+                </div>
 
-            <!-- Section 4: Declarations -->
-            <div class="form-section" id="section4">
-                <!-- תוכן יתווסף בהמשך -->
+                <div class="input-group">
+                    <label for="email">דואר אלקטרוני</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="phone">טלפון נייד</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+            </section>
+
+            <!-- חלק 2: פרטי השקעה -->
+            <div class="section-observer" data-section="2"></div>
+            <section id="section2" class="form-section">
+                <h2 class="section-title">פרטי השקעה</h2>
+                
+                <div class="input-group">
+                    <label for="investmentAmount">סכום השקעה מתוכנן</label>
+                    <input type="number" id="investmentAmount" name="investmentAmount" required min="100000">
+                </div>
+
+                <div class="input-group">
+                    <label for="investmentPeriod">תקופת השקעה</label>
+                    <select id="investmentPeriod" name="investmentPeriod" required>
+                        <option value="">בחר תקופה</option>
+                        <option value="short">קצר טווח (עד שנה)</option>
+                        <option value="medium">בינוני (1-3 שנים)</option>
+                        <option value="long">ארוך טווח (מעל 3 שנים)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="investmentGoals">מטרות ההשקעה</label>
+                    <textarea id="investmentGoals" name="investmentGoals" required></textarea>
+                </div>
+            </section>
+
+            <!-- חלק 3: הערכת סיכון -->
+            <div class="section-observer" data-section="3"></div>
+            <section id="section3" class="form-section">
+                <h2 class="section-title">הערכת סיכון</h2>
+                
+                <div class="input-group">
+                    <label>ניסיון בשוק ההון</label>
+                    <select name="marketExperience" required>
+                        <option value="">בחר תשובה</option>
+                        <option value="none">אין ניסיון</option>
+                        <option value="basic">ניסיון בסיסי</option>
+                        <option value="advanced">ניסיון מתקדם</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>רמת סיכון מועדפת</label>
+                    <select name="riskLevel" required>
+                        <option value="">בחר תשובה</option>
+                        <option value="low">נמוכה</option>
+                        <option value="medium">בינונית</option>
+                        <option value="high">גבוהה</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- חלק 4: הצהרות -->
+            <div class="section-observer" data-section="4"></div>
+            <section id="section4" class="form-section">
+                <h2 class="section-title">הצהרות</h2>
+                
+                <div class="input-group">
+                    <label>
+                        <input type="checkbox" name="terms" required>
+                        קראתי והבנתי את תנאי ההסכם
+                    </label>
+                </div>
+
+                <div class="input-group">
+                    <label>
+                        <input type="checkbox" name="risks" required>
+                        אני מבין/ה את הסיכונים הכרוכים בהשקעה
+                    </label>
+                </div>
+
+                <div class="input-group">
+                    <label>חתימה</label>
+                    <canvas id="signature-pad" width="400" height="200" 
+                            style="border: 1px solid #ccc; border-radius: 4px;"></canvas>
+                    <button type="button" id="clear-signature">נקה חתימה</button>
+                </div>
+            </section>
+
+            <div class="submit-container">
+                <button type="submit" class="submit-button">שלח טופס</button>
             </div>
         </form>
-
-        <!-- Navigation -->
-        <div class="form-navigation">
-            <button type="button" id="prevBtn" class="btn-prev">חזור</button>
-            <button type="button" id="nextBtn" class="btn-next">המשך</button>
-            <button type="button" id="submitBtn" class="btn-submit" style="display:none;">שלח טופס</button>
-        </div>
     </div>
 
-    <!-- Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
-    <!-- Application Scripts -->
-    <script src="/js/debugSystem.js"></script>
-    <script src="/js/firebaseConfig.js"></script>
-    <script src="/js/signatureSystem.js"></script>
-    <script src="/js/pdfGenerator.js"></script>
-    <script src="/js/validation.js"></script>
-    <script src="/js/formHandler.js"></script>
+    <script>
+        // Intersection Observer for steps activation
+        const observers = {};
+        document.querySelectorAll('.section-observer').forEach(observer => {
+            const section = observer.dataset.section;
+            observers[section] = new IntersectionObserver(
+                ([entry]) => {
+                    if (entry.isIntersecting) {
+                        document.querySelectorAll('.step').forEach(step => {
+                            if (step.dataset.step <= section) {
+                                step.classList.add('active');
+                            }
+                        });
+                    }
+                },
+                { threshold: 1.0 }
+            );
+            observers[section].observe(observer);
+        });
+    </script>
 </body>
 </html>
