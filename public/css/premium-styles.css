@@ -1,0 +1,380 @@
+/* Premium Form Styles */
+:root {
+    /* Primary Colors */
+    --primary-gold: #C5A572;
+    --primary-dark: #2C353D;
+    --primary-blue: #1E2C4F;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+    --gradient-gold: linear-gradient(135deg, #C5A572 0%, #E2C697 100%);
+    
+    /* Shadows */
+    --shadow-small: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --shadow-large: 0 8px 16px rgba(0, 0, 0, 0.15);
+    --shadow-gold: 0 4px 12px rgba(197, 165, 114, 0.2);
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    
+    /* Font Settings */
+    --font-primary: 'Assistant', sans-serif;
+    --font-secondary: 'IBM Plex Sans Hebrew', sans-serif;
+}
+
+/* Global Reset & Base Styles */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-primary);
+    line-height: 1.6;
+    color: var(--primary-dark);
+    background: #F5F5F7;
+    direction: rtl;
+}
+
+/* Container & Layout */
+.form-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow-large);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Premium Header */
+.form-header {
+    background: var(--gradient-primary);
+    margin: -2rem -2rem 3rem;
+    padding: 3rem 2rem;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.form-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('/images/pattern.svg');
+    opacity: 0.1;
+    animation: patternMove 20s linear infinite;
+}
+
+.logo {
+    width: 180px;
+    height: auto;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+/* Progress Steps */
+.progress-container {
+    margin: 3rem 0;
+    padding: 1rem;
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 0 auto;
+    max-width: 800px;
+}
+
+.progress-steps::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 3px;
+    width: 100%;
+    background: #E5E7EB;
+    z-index: 1;
+}
+
+.step {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.step-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid #E5E7EB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: var(--primary-dark);
+    transition: all var(--transition-normal);
+    position: relative;
+}
+
+.step.active .step-circle {
+    border-color: var(--primary-gold);
+    background: var(--gradient-gold);
+    color: white;
+    box-shadow: var(--shadow-gold);
+}
+
+.step-label {
+    margin-top: 0.75rem;
+    font-weight: 500;
+    color: var(--primary-dark);
+    transition: var(--transition-normal);
+}
+
+/* Form Sections */
+.form-section {
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all var(--transition-normal);
+}
+
+.form-section.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+    animation: sectionFadeIn 0.5s ease forwards;
+}
+
+/* Input Styles */
+.input-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.input-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--primary-dark);
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #E5E7EB;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all var(--transition-fast);
+    font-family: var(--font-primary);
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-gold);
+    box-shadow: var(--shadow-gold);
+}
+
+/* Error States */
+.input-error {
+    border-color: #EF4444 !important;
+}
+
+.error-message {
+    color: #EF4444;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+/* Button Styles */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    border: none;
+    font-family: var(--font-primary);
+}
+
+.btn-primary {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: var(--shadow-medium);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-large);
+}
+
+.btn-secondary {
+    background: white;
+    color: var(--primary-dark);
+    border: 2px solid #E5E7EB;
+}
+
+.btn-secondary:hover {
+    border-color: var(--primary-gold);
+    background: #F9FAFB;
+}
+
+/* Signature Area */
+.signature-container {
+    background: white;
+    border: 2px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+.signature-canvas {
+    width: 100%;
+    height: 200px;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.signature-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+/* Loader */
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #E5E7EB;
+    border-top-color: var(--primary-gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Animations */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes sectionFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes patternMove {
+    from { background-position: 0 0; }
+    to { background-position: 100% 100%; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+    
+    .form-header {
+        padding: 2rem 1rem;
+        margin: -1rem -1rem 2rem;
+    }
+    
+    .step-circle {
+        width: 50px;
+        height: 50px;
+        font-size: 1rem;
+    }
+    
+    .step-label {
+        font-size: 0.875rem;
+    }
+    
+    .signature-controls {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
+
+/* Debug Mode Styles */
+.debug-mode .form-section {
+    border: 1px dashed #666;
+    margin: 1rem 0;
+    padding: 1rem;
+}
+
+.debug-mode .input-group {
+    position: relative;
+}
+
+.debug-mode .input-group::before {
+    content: attr(data-field-name);
+    position: absolute;
+    top: -20px;
+    left: 0;
+    font-size: 12px;
+    color: #666;
+    background: #fff;
+    padding: 0 4px;
+}
+
+/* Print Styles */
+@media print {
+    .form-container {
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+    }
+    
+    .form-header {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    .signature-container {
+        page-break-inside: avoid;
+    }
+    
+    .btn, .loader {
+        display: none !important;
+    }
+}

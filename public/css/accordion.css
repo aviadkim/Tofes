@@ -1,0 +1,142 @@
+/* public/css/accordion.css */
+.accordion-section {
+    margin: 1.5rem 0;
+}
+
+.accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--light-gray);
+    border: 1px solid var(--border-gray);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.accordion-header:hover {
+    background: var(--primary-light);
+}
+
+.accordion-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark-blue);
+}
+
+.accordion-icon {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.3s ease;
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: white;
+    border: 1px solid var(--border-gray);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+}
+
+.accordion-body {
+    padding: 1rem;
+}
+
+/* Active States */
+.accordion-section.active .accordion-header {
+    background: var(--primary-light);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-color: var(--primary-color);
+}
+
+.accordion-section.active .accordion-icon {
+    transform: rotate(180deg);
+}
+
+.accordion-section.active .accordion-content {
+    max-height: 1000px;
+    border-color: var(--primary-color);
+}
+
+/* Nested Accordions */
+.nested-accordion {
+    margin-right: 1.5rem;
+}
+
+.nested-accordion .accordion-header {
+    background: white;
+}
+
+.nested-accordion .accordion-content {
+    border-right: 2px solid var(--primary-light);
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .accordion-title {
+        font-size: 1rem;
+    }
+    
+    .accordion-body {
+        padding: 0.75rem;
+    }
+    
+    .nested-accordion {
+        margin-right: 0.75rem;
+    }
+}
+
+/* Animation Classes */
+.accordion-content-enter {
+    max-height: 0;
+    opacity: 0;
+}
+
+.accordion-content-enter-active {
+    max-height: 1000px;
+    opacity: 1;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.accordion-content-exit {
+    max-height: 1000px;
+    opacity: 1;
+}
+
+.accordion-content-exit-active {
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+/* Print Styles */
+@media print {
+    .accordion-content {
+        max-height: none !important;
+        overflow: visible !important;
+    }
+    
+    .accordion-icon {
+        display: none;
+    }
+}
+
+/* RTL Support */
+[dir="rtl"] .accordion-icon {
+    transform: rotate(180deg);
+}
+
+[dir="rtl"] .accordion-section.active .accordion-icon {
+    transform: rotate(0);
+}
+
+[dir="rtl"] .nested-accordion {
+    margin-right: 0;
+    margin-left: 1.5rem;
+    border-right: none;
+    border-left: 2px solid var(--primary-light);
+}
