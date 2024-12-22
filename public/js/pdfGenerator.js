@@ -152,6 +152,8 @@ class PDFGenerator {
         } catch (error) {
             this.logError('Failed to generate PDF', error);
             throw error;
+        } finally {
+            this.clearScreenshots();
         }
     }
 
@@ -223,5 +225,5 @@ class PDFGenerator {
     }
 }
 
-// Export the class
+// Initialize global instance
 window.pdfGenerator = new PDFGenerator();

@@ -161,7 +161,6 @@ class ValidationSystem {
         return results;
     }
 
-    // Debug Methods
     log(message) {
         const logEntry = `[${new Date().toISOString()}] Validation: ${message}`;
         this.debugLogs.push(logEntry);
@@ -191,5 +190,5 @@ class ValidationSystem {
     }
 }
 
-// Export the class
+// Initialize global instance
 window.validationSystem = new ValidationSystem();
