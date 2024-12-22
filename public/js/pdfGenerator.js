@@ -224,4 +224,4 @@ class PDFGenerator {
 }
 
 // Export the class
-export default PDFGenerator;
+window.pdfGenerator = new PDFGenerator();

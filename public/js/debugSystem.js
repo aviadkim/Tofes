@@ -283,5 +283,4 @@ class DebugSystem {
 }
 
 // Export the debug system
-export const debugSystem = new DebugSystem();
-export default debugSystem;
+window.debugSystem = new DebugSystem();

@@ -192,4 +192,4 @@ class ValidationSystem {
 }
 
 // Export the class
-export default ValidationSystem;
+window.validationSystem = new ValidationSystem();
