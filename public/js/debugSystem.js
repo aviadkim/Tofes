@@ -5,282 +5,243 @@ class DebugSystem {
         this.logs = [];
         this.MAX_LOGS = 1000;
         this.startTime = Date.now();
-        this.components = new Set();
-        
-        // מאזין למקשי קיצור
-        this.setupKeyboardShortcuts();
-        // יצירת פאנל דיבוג
-        this.createDebugPanel();
     }
 
-    setupKeyboardShortcuts() {
-        document.addEventListener('keydown', (e) => {
-            // Ctrl + Shift + D להפעלת/כיבוי דיבוג
-            if (e.ctrlKey && e.shiftKey && e.key === 'D') {
-                this.toggleDebug();
-            }
-            // Ctrl + Shift + L לניקוי לוגים
-            if (e.ctrlKey && e.shiftKey && e.key === 'L') {
-                this.clearLogs();
-            }
-        });
+    enable() {
+        this.isEnabled = true;
+        console.log('[DEBUG] Debug system enabled');
     }
 
-    createDebugPanel() {
-        const panel = document.createElement('div');
-        panel.className = 'debug-panel';
-        panel.style.display = 'none';
-        
-        panel.innerHTML = `
-            <div class="debug-header">
-                <h3>Debug Panel</h3>
-                <button class="debug-close">×</button>
-            </div>
-            <div class="debug-content">
-                <div class="debug-controls">
-                    <button class="debug-btn" data-action="clear">Clear Logs</button>
-                    <button class="debug-btn" data-action="save">Save Logs</button>
-                    <button class="debug-btn" data-action="check">System Check</button>
-                </div>
-                <div class="debug-tabs">
-                    <button class="debug-tab active" data-tab="logs">Logs</button>
-                    <button class="debug-tab" data-tab="network">Network</button>
-                    <button class="debug-tab" data-tab="state">State</button>
-                </div>
-                <div class="debug-log-container"></div>
-                <div class="debug-status"></div>
-            </div>
-        `;
-
-        // הוספת Event Listeners
-        panel.querySelector('.debug-close').addEventListener('click', () => {
-            this.hideDebugPanel();
-        });
-
-        panel.querySelector('[data-action="clear"]').addEventListener('click', () => {
-            this.clearLogs();
-        });
-
-        panel.querySelector('[data-action="save"]').addEventListener('click', () => {
-            this.saveLogs();
-        });
-
-        panel.querySelector('[data-action="check"]').addEventListener('click', () => {
-            this.performSystemCheck();
-        });
-
-        // מעבר בין טאבים
-        panel.querySelectorAll('.debug-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                this.switchTab(e.target.dataset.tab);
-            });
-        });
-
-        document.body.appendChild(panel);
-        this.panel = panel;
+    disable() {
+        this.isEnabled = false;
+        console.log('[DEBUG] Debug system disabled');
     }
 
-    toggleDebug() {
-        this.isEnabled = !this.isEnabled;
-        this.panel.style.display = this.isEnabled ? 'block' : 'none';
-        this.log(`Debug mode ${this.isEnabled ? 'enabled' : 'disabled'}`, 'system');
-        
-        // הוספת/הסרת class לגוף האתר
-        document.body.classList.toggle('debug-mode', this.isEnabled);
-    }
-
-    log(message, type = 'info', component = 'general') {
+    log(message, type = 'info') {
         const timestamp = new Date().toISOString();
-        const timeSinceStart = Date.now() - this.startTime;
+        const log = { message, type, timestamp };
         
-        const logEntry = {
-            timestamp,
-            timeSinceStart,
-            type,
-            component,
-            message,
-            stack: new Error().stack
-        };
-
-        this.logs.push(logEntry);
-        this.components.add(component);
-
-        // שמירה על מספר מקסימלי של לוגים
+        this.logs.push(log);
         if (this.logs.length > this.MAX_LOGS) {
             this.logs.shift();
         }
 
         if (this.isEnabled) {
-            this.updateDebugPanel();
-        }
-
-        // שמירה ב-localStorage
-        this.saveToLocalStorage();
-    }
-
-    error(message, error, component = 'general') {
-        const errorDetails = {
-            message: error?.message || message,
-            stack: error?.stack,
-            component
-        };
-
-        this.log(`ERROR: ${message}`, 'error', component);
-        console.error(errorDetails);
-    }
-
-    warn(message, component = 'general') {
-        this.log(message, 'warning', component);
-    }
-
-    updateDebugPanel() {
-        const container = this.panel.querySelector('.debug-log-container');
-        if (!container) return;
-
-        const logsHTML = this.logs.map(log => `
-            <div class="debug-log-entry ${log.type}">
-                <span class="debug-timestamp">${new Date(log.timestamp).toLocaleTimeString()}</span>
-                <span class="debug-component">[${log.component}]</span>
-                <span class="debug-message">${this.escapeHtml(log.message)}</span>
-            </div>
-        `).join('');
-
-        container.innerHTML = logsHTML;
-        container.scrollTop = container.scrollHeight;
-    }
-
-    async performSystemCheck() {
-        this.log('Starting system check...', 'system');
-
-        const checks = [
-            this.checkLocalStorage(),
-            this.checkFirebaseConnection(),
-            this.checkNetworkSpeed(),
-            this.checkBrowserCompatibility(),
-            this.checkMemoryUsage()
-        ];
-
-        try {
-            const results = await Promise.all(checks);
-            this.log('System check completed', 'system');
-            this.updateSystemStatus(results);
-        } catch (error) {
-            this.error('System check failed', error);
+            const prefix = `[${type.toUpperCase()}]`;
+            console.log(`${prefix} ${message}`);
         }
     }
 
-    async checkLocalStorage() {
-        try {
-            const testKey = '_debug_test';
-            localStorage.setItem(testKey, 'test');
-            localStorage.removeItem(testKey);
-            return { name: 'LocalStorage', status: 'OK' };
-        } catch (error) {
-            return { name: 'LocalStorage', status: 'Failed', error };
-        }
+    error(message) {
+        this.log(message, 'error');
     }
 
-    async checkFirebaseConnection() {
-        try {
-            if (!window.firebase) {
-                throw new Error('Firebase not initialized');
-            }
-            // בדיקת חיבור לפיירבייס
-            const result = await firebase.firestore().collection('test').get();
-            return { name: 'Firebase', status: 'Connected' };
-        } catch (error) {
-            return { name: 'Firebase', status: 'Disconnected', error };
-        }
+    warn(message) {
+        this.log(message, 'warning');
     }
 
-    async checkNetworkSpeed() {
-        const startTime = performance.now();
-        try {
-            await fetch('/ping');
-            const endTime = performance.now();
-            const latency = endTime - startTime;
-            return { name: 'Network', status: `Latency: ${latency.toFixed(2)}ms` };
-        } catch (error) {
-            return { name: 'Network', status: 'Failed', error };
-        }
+    info(message) {
+        this.log(message, 'info');
     }
 
-    checkBrowserCompatibility() {
-        const features = {
-            localStorage: !!window.localStorage,
-            indexedDB: !!window.indexedDB,
-            serviceWorker: !!navigator.serviceWorker,
-            webGL: !!document.createElement('canvas').getContext('webgl'),
-            pointer: !!window.PointerEvent
-        };
-
-        return {
-            name: 'Browser Compatibility',
-            status: Object.entries(features)
-                .filter(([, supported]) => !supported)
-                .map(([feature]) => feature)
-                .join(', ') || 'All features supported'
-        };
-    }
-
-    checkMemoryUsage() {
-        if (window.performance && window.performance.memory) {
-            const memory = window.performance.memory;
-            return {
-                name: 'Memory Usage',
-                status: `${Math.round(memory.usedJSHeapSize / 1024 / 1024)}MB / ${Math.round(memory.jsHeapSizeLimit / 1024 / 1024)}MB`
-            };
-        }
-        return { name: 'Memory Usage', status: 'Not available' };
-    }
-
-    updateSystemStatus(results) {
-        const statusContainer = this.panel.querySelector('.debug-status');
-        if (!statusContainer) return;
-
-        statusContainer.innerHTML = results.map(result => `
-            <div class="status-item ${result.status.includes('Failed') ? 'error' : 'success'}">
-                <span class="status-name">${result.name}:</span>
-                <span class="status-value">${result.status}</span>
-            </div>
-        `).join('');
-    }
-
-    saveLogs() {
-        const blob = new Blob([JSON.stringify(this.logs, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `debug-logs-${new Date().toISOString()}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-
-    clearLogs() {
+    clear() {
         this.logs = [];
-        this.updateDebugPanel();
-        this.saveToLocalStorage();
+        console.clear();
     }
 
-    saveToLocalStorage() {
-        try {
-            localStorage.setItem('debug_logs', JSON.stringify(this.logs.slice(-100)));
-        } catch (error) {
-            console.error('Failed to save logs to localStorage:', error);
-        }
+    getLogs() {
+        return this.logs;
     }
 
-    escapeHtml(unsafe) {
-        return unsafe
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+    getPerformance() {
+        return {
+            uptime: Date.now() - this.startTime,
+            logsCount: this.logs.length
+        };
     }
 }
 
-// Export the debug system
+// Initialize global instance
 window.debugSystem = new DebugSystem();
+
+// public/js/pdfGenerator.js
+class PDFGenerator {
+    constructor() {
+        this.debugMode = false;
+        this.debugLogs = [];
+        this.screenshots = [];
+        
+        // PDF Options
+        this.defaultOptions = {
+            format: 'a4',
+            orientation: 'portrait',
+            unit: 'mm',
+            compress: true
+        };
+    }
+
+    async generatePDF(elementId, options = {}) {
+        try {
+            const element = document.getElementById(elementId);
+            if (!element) {
+                throw new Error('Element not found');
+            }
+
+            const mergedOptions = { ...this.defaultOptions, ...options };
+            
+            // Generate canvas from element
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                logging: this.debugMode,
+                useCORS: true
+            });
+
+            // Create PDF
+            const pdf = new jspdf.jsPDF(mergedOptions);
+            
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            
+            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+
+            if (this.debugMode) {
+                this.screenshots.push(imgData);
+                this.log('PDF generated successfully');
+            }
+
+            return pdf;
+
+        } catch (error) {
+            this.log('Error generating PDF: ' + error.message, 'error');
+            throw error;
+        }
+    }
+
+    log(message, type = 'info') {
+        const log = {
+            timestamp: new Date().toISOString(),
+            message,
+            type
+        };
+        
+        this.debugLogs.push(log);
+        
+        if (this.debugMode) {
+            console.log(`[PDF ${type.toUpperCase()}] ${message}`);
+        }
+
+        // Also log to debug system if available
+        if (window.debugSystem) {
+            window.debugSystem.log(message, type);
+        }
+    }
+
+    setDebugMode(enabled) {
+        this.debugMode = enabled;
+        this.log(`Debug mode ${enabled ? 'enabled' : 'disabled'}`);
+    }
+
+    clearLogs() {
+        this.debugLogs = [];
+        this.screenshots = [];
+    }
+}
+
+// Initialize global instance
+window.pdfGenerator = new PDFGenerator();
+
+// public/js/validation.js
+class ValidationSystem {
+    constructor() {
+        this.debugMode = false;
+        this.debugLogs = [];
+        this.validators = this.initializeValidators();
+        this.errorMessages = new Map();
+    }
+
+    initializeValidators() {
+        return {
+            required: (value) => value !== undefined && value !== null && value !== '',
+            email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+            phone: (value) => /^[0-9]{10}$/.test(value),
+            idNumber: (value) => /^[0-9]{9}$/.test(value),
+            minLength: (value, min) => value.length >= min,
+            maxLength: (value, max) => value.length <= max,
+            numeric: (value) => /^[0-9]+$/.test(value),
+            amount: (value) => !isNaN(value) && parseFloat(value) > 0
+        };
+    }
+
+    validate(value, rules) {
+        this.errorMessages.clear();
+        let isValid = true;
+
+        for (const [rule, params] of Object.entries(rules)) {
+            const validator = this.validators[rule];
+            if (!validator) {
+                this.log(`Unknown validator: ${rule}`, 'error');
+                continue;
+            }
+
+            const result = validator(value, params);
+            if (!result) {
+                isValid = false;
+                this.addError(rule, value);
+            }
+        }
+
+        return isValid;
+    }
+
+    addError(rule, value) {
+        const messages = {
+            required: 'שדה חובה',
+            email: 'כתובת אימייל לא תקינה',
+            phone: 'מספר טלפון לא תקין',
+            idNumber: 'מספר תעודת זהות לא תקין',
+            minLength: 'אורך מינימלי לא תקין',
+            maxLength: 'אורך מקסימלי לא תקין',
+            numeric: 'יש להזין מספרים בלבד',
+            amount: 'יש להזין סכום חיובי'
+        };
+
+        this.errorMessages.set(rule, messages[rule]);
+        this.log(`Validation failed: ${rule} for value: ${value}`, 'warning');
+    }
+
+    getErrors() {
+        return Array.from(this.errorMessages.values());
+    }
+
+    log(message, type = 'info') {
+        const log = {
+            timestamp: new Date().toISOString(),
+            message,
+            type
+        };
+        
+        this.debugLogs.push(log);
+        
+        if (this.debugMode) {
+            console.log(`[VALIDATION ${type.toUpperCase()}] ${message}`);
+        }
+
+        // Also log to debug system if available
+        if (window.debugSystem) {
+            window.debugSystem.log(message, type);
+        }
+    }
+
+    setDebugMode(enabled) {
+        this.debugMode = enabled;
+        this.log(`Debug mode ${enabled ? 'enabled' : 'disabled'}`);
+    }
+
+    clearLogs() {
+        this.debugLogs = [];
+    }
+}
+
+// Initialize global instance
+window.validationSystem = new ValidationSystem();
