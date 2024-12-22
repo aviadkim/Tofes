@@ -5,355 +5,491 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>הסכם שיווק השקעות | מובנה</title>
     
-    <style>
-        :root {
-            --primary-color: #2558e5;
-            --primary-light: #eef3ff;
-            --dark-blue: #1e2c4f;
-            --light-gray: #f8fafc;
-            --border-gray: #e2e8f0;
-            --success-color: #4CAF50;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Assistant', sans-serif;
-            background: var(--light-gray);
-            color: var(--dark-blue);
-            line-height: 1.6;
-        }
-
-        .form-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-            background: white;
-        }
-
-        /* Header & Logo */
-        .form-header {
-            text-align: center;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            background: white;
-        }
-
-        .logo {
-            max-width: 180px;
-            height: auto;
-            margin-bottom: 1rem;
-        }
-
-        /* Progress Steps - קבוע בראש העמוד */
-        .progress-container {
-            position: sticky;
-            top: 0;
-            background: white;
-            padding: 1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            z-index: 100;
-        }
-
-        .progress-steps {
-            display: flex;
-            justify-content: space-between;
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .progress-steps::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--border-gray);
-            transform: translateY(-50%);
-            z-index: 1;
-        }
-
-        .step {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .step-circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: white;
-            border: 2px solid var(--border-gray);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .step.active .step-circle {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-            color: white;
-        }
-
-        .step-label {
-            font-size: 0.9rem;
-            color: var(--dark-blue);
-        }
-
-        /* Form Sections */
-        .form-section {
-            margin-bottom: 4rem;
-            padding: 2rem;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            color: var(--dark-blue);
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid var(--primary-light);
-        }
-
-        /* Form Groups */
-        .input-group {
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 2px solid var(--border-gray);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px var(--primary-light);
-        }
-
-        /* Submit Button - קבוע בתחתית */
-        .submit-container {
-            position: sticky;
-            bottom: 2rem;
-            background: white;
-            padding: 1rem;
-            text-align: center;
-            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
-        }
-
-        .submit-button {
-            background: var(--primary-color);
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .submit-button:hover {
-            background: var(--dark-blue);
-        }
-
-        /* Intersection Observer Helper */
-        .section-observer {
-            height: 1px;
-            margin: 0;
-            padding: 0;
-            visibility: hidden;
-        }
-    </style>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/premium-styles.css" rel="stylesheet">
 </head>
 <body>
     <div class="form-container">
+        <!-- Header -->
         <header class="form-header">
-            <img src="images/movne-logo.png" alt="מובנה לוגו" class="logo">
-            <h1>טופס הסכם שיווק השקעות</h1>
+            <img src="images/movne-logo.png" alt="מובנה" class="logo">
+            <h1>שאלון הכרת לקוח והסכם שיווק השקעות</h1>
         </header>
 
-        <div class="progress-container">
-            <div class="progress-steps">
-                <div class="step active" data-step="1">
-                    <div class="step-circle">1</div>
-                    <div class="step-label">פרטים אישיים</div>
-                </div>
-                <div class="step" data-step="2">
-                    <div class="step-circle">2</div>
-                    <div class="step-label">פרטי השקעה</div>
-                </div>
-                <div class="step" data-step="3">
-                    <div class="step-circle">3</div>
-                    <div class="step-label">הערכת סיכון</div>
-                </div>
-                <div class="step" data-step="4">
-                    <div class="step-circle">4</div>
-                    <div class="step-label">הצהרות</div>
-                </div>
-            </div>
-        </div>
-
+        <!-- Main Form -->
         <form id="investmentForm">
-            <!-- חלק 1: פרטים אישיים -->
-            <div class="section-observer" data-section="1"></div>
-            <section id="section1" class="form-section">
-                <h2 class="section-title">פרטים אישיים</h2>
+            <!-- Section 1: Basic Info -->
+            <section class="form-section" id="personalInfo">
+                <h2>פרטים אישיים ומטרות השקעה</h2>
                 
+                <!-- Personal Details -->
                 <div class="input-group">
-                    <label for="firstName">שם פרטי</label>
-                    <input type="text" id="firstName" name="firstName" required>
+                    <label>שם מלא</label>
+                    <input type="text" name="fullName" required>
                 </div>
 
+                <!-- Investment Amount -->
                 <div class="input-group">
-                    <label for="lastName">שם משפחה</label>
-                    <input type="text" id="lastName" name="lastName" required>
+                    <label>סכום מתוכנן להשקעה</label>
+                    <input type="number" 
+                           name="investmentAmount" 
+                           min="100000" 
+                           required 
+                           placeholder="מינימום ₪100,000"
+                           class="premium-input">
+                    <div class="input-hint">סכום מינימלי להשקעה: ₪100,000</div>
                 </div>
 
+                <!-- Bank Selection -->
                 <div class="input-group">
-                    <label for="idNumber">תעודת זהות</label>
-                    <input type="text" id="idNumber" name="idNumber" required pattern="[0-9]{9}">
-                </div>
-
-                <div class="input-group">
-                    <label for="email">דואר אלקטרוני</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-
-                <div class="input-group">
-                    <label for="phone">טלפון נייד</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-            </section>
-
-            <!-- חלק 2: פרטי השקעה -->
-            <div class="section-observer" data-section="2"></div>
-            <section id="section2" class="form-section">
-                <h2 class="section-title">פרטי השקעה</h2>
-                
-                <div class="input-group">
-                    <label for="investmentAmount">סכום השקעה מתוכנן</label>
-                    <input type="number" id="investmentAmount" name="investmentAmount" required min="100000">
-                </div>
-
-                <div class="input-group">
-                    <label for="investmentPeriod">תקופת השקעה</label>
-                    <select id="investmentPeriod" name="investmentPeriod" required>
-                        <option value="">בחר תקופה</option>
-                        <option value="short">קצר טווח (עד שנה)</option>
-                        <option value="medium">בינוני (1-3 שנים)</option>
-                        <option value="long">ארוך טווח (מעל 3 שנים)</option>
+                    <label>בנק</label>
+                    <select name="bank" required>
+                        <option value="">בחר בנק...</option>
+                        <option value="leumi">לאומי</option>
+                        <option value="poalim">הפועלים</option>
+                        <option value="discount">דיסקונט</option>
+                        <option value="mizrahi">מזרחי טפחות</option>
                     </select>
                 </div>
 
+                <!-- Investment Purpose -->
                 <div class="input-group">
-                    <label for="investmentGoals">מטרות ההשקעה</label>
-                    <textarea id="investmentGoals" name="investmentGoals" required></textarea>
+                    <label>מטבע ייחוס (ניתן לבחור יותר מאחד)</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="currency" value="ils">
+                            <span class="checkmark"></span>
+                            שקל
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="currency" value="usd">
+                            <span class="checkmark"></span>
+                            דולר
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="currency" value="eur">
+                            <span class="checkmark"></span>
+                            יורו
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="currency" value="gbp">
+                            <span class="checkmark"></span>
+                            ליש"ט
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Investment Goals -->
+                <div class="input-group">
+                    <label>ייעוד הכסף (ניתן לבחור יותר מאחד)</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="purpose" value="property">
+                            <span class="checkmark"></span>
+                            רכישת נכס
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="purpose" value="family">
+                            <span class="checkmark"></span>
+                            סיוע למשפחה
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="purpose" value="pension">
+                            <span class="checkmark"></span>
+                            פנסיה
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="purpose" value="inheritance">
+                            <span class="checkmark"></span>
+                            ירושה לילדים
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="purpose" value="income">
+                            <span class="checkmark"></span>
+                            הכנסה שוטפת מהשקעה
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="purpose" value="none">
+                            <span class="checkmark"></span>
+                            אין ייעוד לכספים כרגע
+                        </label>
+                        <label class="checkbox-container other-option">
+                            <input type="checkbox" name="purpose" value="other">
+                            <span class="checkmark"></span>
+                            אחר: <input type="text" name="purposeOther" class="inline-input">
+                        </label>
+                    </div>
                 </div>
             </section>
 
-            <!-- חלק 3: הערכת סיכון -->
-            <div class="section-observer" data-section="3"></div>
-            <section id="section3" class="form-section">
-                <h2 class="section-title">הערכת סיכון</h2>
-                
-                <div class="input-group">
-                    <label>ניסיון בשוק ההון</label>
-                    <select name="marketExperience" required>
-                        <option value="">בחר תשובה</option>
-                        <option value="none">אין ניסיון</option>
-                        <option value="basic">ניסיון בסיסי</option>
-                        <option value="advanced">ניסיון מתקדם</option>
-                    </select>
-                </div>
+            <!-- Section 2: Investment Goals -->
+            <section class="form-section" id="investmentGoals">
+                <h2>מטרות ההשקעה</h2>
 
                 <div class="input-group">
-                    <label>רמת סיכון מועדפת</label>
-                    <select name="riskLevel" required>
-                        <option value="">בחר תשובה</option>
-                        <option value="low">נמוכה</option>
-                        <option value="medium">בינונית</option>
-                        <option value="high">גבוהה</option>
-                    </select>
+                    <label>המטרה העיקרית של ההשקעה</label>
+                    <div class="radio-group">
+                        <label class="radio-container">
+                            <input type="radio" name="mainGoal" value="preserve" required>
+                            <span class="radio-mark"></span>
+                            לשמור על הכסף שלי
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="mainGoal" value="longTerm" required>
+                            <span class="radio-mark"></span>
+                            לחסוך לטווח ארוך
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="mainGoal" value="liquidity" required>
+                            <span class="radio-mark"></span>
+                            שמירה על נזילות
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="mainGoal" value="growth" required>
+                            <span class="radio-mark"></span>
+                            להגדיל את ההון
+                        </label>
+                    </div>
+                </div>
+
+                <!-- טווח השקעה -->
+                <div class="input-group">
+                    <label>טווח ההשקעה הצפוי</label>
+                    <div class="radio-group">
+                        <label class="radio-container">
+                            <input type="radio" name="investmentPeriod" value="shortTerm" required>
+                            <span class="radio-mark"></span>
+                            עד שנתיים
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="investmentPeriod" value="mediumTerm" required>
+                            <span class="radio-mark"></span>
+                            שנתיים עד חמש שנים
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="investmentPeriod" value="longTerm" required>
+                            <span class="radio-mark"></span>
+                            מעל חמש שנים
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="investmentPeriod" value="unlimited" required>
+                            <span class="radio-mark"></span>
+                            לא מוגבל בזמן
+                        </label>
+                    </div>
+                </div>
+
+                <!-- אחוז מסך הנכסים -->
+                <div class="input-group">
+                    <label>אחוז מסך הנכסים המיועדים להשקעה</label>
+                    <div class="radio-group">
+                        <label class="radio-container">
+                            <input type="radio" name="investmentPercentage" value="under10" required>
+                            <span class="radio-mark"></span>
+                            עד 10%
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="investmentPercentage" value="10to25" required>
+                            <span class="radio-mark"></span>
+                            10% עד 25%
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="investmentPercentage" value="25to50" required>
+                            <span class="radio-mark"></span>
+                            25%-50%
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="investmentPercentage" value="over50" required>
+                            <span class="radio-mark"></span>
+                            מעל 50%
+                        </label>
+                    </div>
+                </div>
+
+                <!-- הכנסה פנויה -->
+                <div class="input-group">
+                    <label>הכנסה פנויה חודשית ממוצעת (הכנסה שוטפת בניכוי הוצאות שוטפות)</label>
+                    <div class="radio-group">
+                        <label class="radio-container">
+                            <input type="radio" name="monthlyIncome" value="negative" required>
+                            <span class="radio-mark"></span>
+                            שלילית
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="monthlyIncome" value="balanced" required>
+                            <span class="radio-mark"></span>
+                            מאוזנת
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="monthlyIncome" value="positive" required>
+                            <span class="radio-mark"></span>
+                            חיובית
+                        </label>
+                    </div>
+                </div>
+
+                <!-- הקצאת נכסים -->
+                <div class="input-group">
+                    <label>תאר בקצרה את הקצאת הנכסים שלך בשוק ההון</label>
+                    <textarea name="assetAllocation" rows="4" class="form-textarea"></textarea>
                 </div>
             </section>
 
-            <!-- חלק 4: הצהרות -->
-            <div class="section-observer" data-section="4"></div>
-            <section id="section4" class="form-section">
-                <h2 class="section-title">הצהרות</h2>
-                
+            <!-- Section 3: Risk Assessment -->
+            <section class="form-section" id="riskAssessment">
+                <h2>הערכת סיכון וניסיון</h2>
+
+                <!-- רמת ידע וניסיון -->
                 <div class="input-group">
-                    <label>
-                        <input type="checkbox" name="terms" required>
-                        קראתי והבנתי את תנאי ההסכם
-                    </label>
+                    <label>רמת הידע והניסיון בשוק ההון (ניתן לבחור יותר מאחד)</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="experience" value="none">
+                            <span class="checkmark"></span>
+                            אין ניסיון
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="experience" value="studies">
+                            <span class="checkmark"></span>
+                            במסגרת לימודים
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="experience" value="following">
+                            <span class="checkmark"></span>
+                            עוקב ומכיר את שוק ההון
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="experience" value="investing">
+                            <span class="checkmark"></span>
+                            משקיע בשוק ההון מעל 5 שנים
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="experience" value="structured">
+                            <span class="checkmark"></span>
+                            השקעתי במוצרים מובנים
+                        </label>
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="experience" value="alternative">
+                            <span class="checkmark"></span>
+                            יש לי השקעות אלטרנטיביות
+                        </label>
+                    </div>
                 </div>
 
+                <!-- צורך עתידי בכספים -->
                 <div class="input-group">
-                    <label>
-                        <input type="checkbox" name="risks" required>
-                        אני מבין/ה את הסיכונים הכרוכים בהשקעה
-                    </label>
+                    <label>האם בתקופה הנראית לעין יש צורך בכל הכסף או חלק ממנו?</label>
+                    <div class="radio-group">
+                        <label class="radio-container">
+                            <input type="radio" name="needMoney" value="no" required>
+                            <span class="radio-mark"></span>
+                            לא
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="needMoney" value="yes" required>
+                            <span class="radio-mark"></span>
+                            כן
+                        </label>
+                    </div>
                 </div>
 
-                <div class="input-group">
-                    <label>חתימה</label>
-                    <canvas id="signature-pad" width="400" height="200" 
-                            style="border: 1px solid #ccc; border-radius: 4px;"></canvas>
-                    <button type="button" id="clear-signature">נקה חתימה</button>
+                <!-- פירוט סיבות לצורך בכספים -->
+                <div class="input-group need-money-details" style="display: none;">
+                    <label>פירוט סיבות אפשריות לצורך בכספים המושקעים</label>
+                    <textarea name="moneyNeedReason" rows="3" class="form-textarea"
+                            placeholder="לדוגמה: עזרה לילדים, חתונה, ניתוח"></textarea>
+                </div>
+
+                <!-- סיכון ותנודתיות -->
+                <div class="risk-section">
+                    <h3>סיכון ותנודתיות - יחס לסיכון</h3>
+                    <div class="risk-disclaimer alert alert-info">
+                        <p>שאלות אלו נועדו להבהיר את יחס הלקוח לתנודתיות בשוק והפסדים/רווחים אפשריים הכרוכים בהשקעה.</p>
+                        <p><strong>החברה אינה מתחייבת לתשואה כלשהי</strong> שתנבע מהשירותים שייתנו על ידה ואינה מתחייבת לשיעור ההפסד שיכול וייגרם ו/או לשמירת ערכו הריאלי של התיק.</p>
+                        <p>יש להסביר ללקוח את הקשר בין סיכון לתשואה. במידה ויש חוסר התאמה בין הרווח הצפוי להפסד הצפוי, יש להסב את תשומת ליבו לכך.</p>
+                    </div>
+
+                    <!-- התנהגות במשברים קודמים -->
+                    <div class="input-group">
+                        <label>כיצד נהגת או היית נוהג במשברים קודמים (למשל בשנים 2008 או 2020)?</label>
+                        <div class="radio-group">
+                            <label class="radio-container">
+                                <input type="radio" name="pastCrisisBehavior" value="1" required>
+                                <span class="radio-mark"></span>
+                                מכרתי את כל התיק ועברתי למזומן
+                            </label>
+                            <label class="radio-container">
+                                <input type="radio" name="pastCrisisBehavior" value="2" required>
+                                <span class="radio-mark"></span>
+                                הקטנתי משמעותית את החשיפה למניות
+                            </label>
+                            <label class="radio-container">
+                                <input type="radio" name="pastCrisisBehavior" value="3" required>
+                                <span class="radio-mark"></span>
+                                לא ביצעתי שום שינוי כי ההשקעות שלי הן לטווח ארוך
+                            </label>
+                            <label class="radio-container">
+                                <input type="radio" name="pastCrisisBehavior" value="4" required>
+                                <span class="radio-mark"></span>
+                                ניצלתי את ההזדמנות והגדלתי את מרכיב המניות
+                            </label>
+                            <label class="radio-container">
+                                <input type="radio" name="pastCrisisBehavior" value="5" required>
+                                <span class="radio-mark"></span>
+                                לא יודע כיצד הייתי מגיב
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- תגובה להפסד -->
+                    <div class="input-group">
+                        <label>מה תהיה תגובתך אם תיק ההשקעות שלך יציג הפסד של כ-20% בעקבות ירידות חדות בשוק ההון?</label>
+                        <div class="radio-group">
+                            <label class="radio-container">
+                                <input type="radio" name="lossResponse" value="1" required>
+                                <span class="radio-mark"></span>
+                                מבקש למכור את כל האחזקות ולעבור למזומן
+                            </label>
+                            <label class="radio-container">
+                                <input type="radio" name="lossResponse" value="2" required>
+                                <span class="radio-mark"></span>
+                                מבקש להקטין את מרכיב המניות בתיק ההשקעות
+                            </label>
+                            <label class="radio-container">
+                                <input type="radio" name="lossResponse" value="3" required>
+                                <span class="radio-mark"></span>
+                                לא אבצע שום שינוי, השוק הוא מחזורי ולאורך זמן שוק ההון עולה
+                            </label>
+                            <label class="radio-container">
+                                <input type="radio" name="lossResponse" value="4" required>
+                                <span class="radio-mark"></span>
+                                אנצל את ההזדמנות ואבקש להגדיל את ההשקעה
+                            </label>
+                            <label class="radio-container">
+                                <input type="radio" name="lossResponse" value="5" required>
+                                <span class="radio-mark"></span>
+                                אפנה על מנת להתייעץ
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- צרכי לקוח -->
+                    <div class="input-group">
+                        <label>תיאור צרכי הלקוח במלל חופשי</label>
+                        <textarea name="clientNeeds" rows="6" class="form-textarea"></textarea>
+                    </div>
                 </div>
             </section>
 
-            <div class="submit-container">
-                <button type="submit" class="submit-button">שלח טופס</button>
-            </div>
-        </form>
-    </div>
+            <!-- Agreements and Declarations Section -->
+            <section class="form-section" id="agreements">
+                <h2>הצהרות והסכמות</h2>
 
-    <script>
-        // Intersection Observer for steps activation
-        const observers = {};
-        document.querySelectorAll('.section-observer').forEach(observer => {
-            const section = observer.dataset.section;
-            observers[section] = new IntersectionObserver(
-                ([entry]) => {
-                    if (entry.isIntersecting) {
-                        document.querySelectorAll('.step').forEach(step => {
-                            if (step.dataset.step <= section) {
-                                step.classList.add('active');
-                            }
-                        });
-                    }
-                },
-                { threshold: 1.0 }
-            );
-            observers[section].observe(observer);
-        });
-    </script>
-</body>
-</html>
+                <!-- הסכם ראשי באקורדיון -->
+                <div class="accordion" id="mainAgreement">
+                    <div class="accordion-item">
+                        <button class="accordion-header" type="button">
+                            <span>הסכם שיווק השקעות</span>
+                            <span class="read-status">טרם נקרא</span>
+                        </button>
+                        <div class="accordion-content agreement-text">
+                            <!-- תוכן ההסכם -->
+                            <div class="scrollable-content">
+                                בחתימתי על מסמך זה הריני להצהיר, כל מידע אשר נתבקשתי למסור אולם נמנעתי מלמסרו, 
+                                הינו מידע אשר אין ברצוני שישמש את החברה במסגרת מילוי תפקידם על-פי הסכם זה...
+                                <!-- המשך תוכן ההסכם -->
+                            </div>
+                        </div>
+                        <div class="agreement-confirmation">
+                            <label class="checkbox-container">
+                                <input type="checkbox" name="mainAgreementConfirm" required>
+                                <span class="checkmark"></span>
+                                קראתי והבנתי את תנאי ההסכם
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risk Level Recommendations -->
+                <div class="risk-recommendations">
+                    <h3>המלצת רמת סיכון ופיזור נכסים</h3>
+                    
+                    <!-- Medium Risk Section -->
+                    <div class="risk-level-box">
+                        <h4>רמת סיכון בינונית</h4>
+                        <div class="risk-description">
+                            מתאים ללקוחות שמעוניינים בחשיפה לשוק ההון – במניות בתנאי שבנכס הבסיס ייכללו מניות 
+                            הכלולות במדדים המובילים בעולם כגון אס.אנד.פי 500, נאסד"ק, ראסל 2000, תל אביב 125, 
+                            יורוסטוקס 600. ברמת סיכון בינונית מומלץ על השקעה בטווח שבין 20% ועד 40% במוצרים מובנים 
+                            בעלי רמת סיכון גבוהה ויתר ההשקעה תבוצע במוצרים מובנים בעלי רמת סיכון בינונית.
+                        </div>
+                    </div>
+
+                    <!-- High Risk Section -->
+                    <div class="risk-level-box">
+                        <h4>רמת סיכון גבוהה</h4>
+                        <div class="risk-description">
+                            מתאים ללקוחות שמעוניינים לייצר תשואה עודפת על פני פיקדון בנקאי בתמורה להגדלת רמת הסיכון 
+                            באמצעות חשיפה למניות במדדים בשווקים מתפתחים או מדדים של SMALL CAP. ברמת סיכון גבוהה 
+                            מומלץ על השקעה בטווח שבין 40% ועד 60% במוצרים מובנים בעלי רמת סיכון גבוהה ויתר ההשקעה 
+                            תבוצע במוצרים מובנים בעלי רמת סיכון בינונית.
+                        </div>
+                    </div>
+
+                    <!-- Risk Distribution -->
+                    <div class="risk-distribution">
+                        <h4>המלצת פיזור השקעות</h4>
+                        <div class="distribution-table-container">
+                            <table class="distribution-table">
+                                <thead>
+                                    <tr>
+                                        <th>רמת סיכון המוצר</th>
+                                        <th>אחוז חשיפה מומלץ מסך ההשקעות</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>מוצר מובנה בסיכון בינוני</td>
+                                        <td>
+                                            <input type="number" 
+                                                   name="mediumRiskPercentage" 
+                                                   min="0" 
+                                                   max="100" 
+                                                   class="percentage-input"
+                                                   required>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>מוצר מובנה בסיכון גבוה</td>
+                                        <td>
+                                            <input type="number" 
+                                                   name="highRiskPercentage" 
+                                                   min="0" 
+                                                   max="100" 
+                                                   class="percentage-input"
+                                                   required>
+                                        </td>
+                                    </tr>
+                                    <tr class="total-row">
+                                        <td>סה"כ</td>
+                                        <td id="totalPercentage">100%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Investment Notes -->
+                        <div class="investment-notes">
+                            <ul>
+                                <li>המלצת השקעה לנכסים תשלח בנפרד ובהתאם לזמינות.</li>
+                                <li>חשוב להדגיש כי קיים סיכון מנפיק בכל השקעה. מובנה גלובל משווקת מוצרים מובנים אך 
+                                    ורק של בנקים בעלי דירוג IG, כלומר בנקים בעלי דירוג אשראי להשקעה (INVESTMENT GRADE).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- המשך בחלק הבא... -->

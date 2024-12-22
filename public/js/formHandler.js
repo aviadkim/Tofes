@@ -1,168 +1,165 @@
-// public/js/formHandler.js
-class FormHandler {
-    constructor() {
-        console.log('[DEBUG] Initializing FormHandler');
-        
-        this.formData = {};
-        this.form = document.getElementById('investmentForm');
-        this.setupEventListeners();
-        this.setupIntersectionObserver();
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("[DEBUG] Initializing form handler");
+
+    const form = document.getElementById("investmentForm");
+    const submitButton = document.querySelector(".btn-submit");
+    const signatureCanvas = document.getElementById("signatureCanvas");
+    const signaturePad = signatureCanvas ? new SignaturePad(signatureCanvas) : null;
+
+    initializeForm(form, submitButton, signaturePad);
+});
+
+function initializeForm(form, submitButton, signaturePad) {
+    if (!form || !submitButton) {
+        console.error("[ERROR] Form or submit button not found");
+        return;
     }
 
-    setupEventListeners() {
-        // טיפול בשליחת טופס
-        this.form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            await this.handleSubmit();
-        });
+    // Handle form submission
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        console.log("[DEBUG] Form submission triggered");
 
-        // שמירה אוטומטית של נתונים בעת שינוי
-        this.form.querySelectorAll('input, select, textarea').forEach(input => {
-            input.addEventListener('change', () => {
-                this.updateFormData();
-                this.saveToLocalStorage();
-            });
-        });
+        const formData = getFormData(form);
 
-        // צילום סקשן 1 כשמסיימים אותו
-        document.getElementById('section1').querySelectorAll('input').forEach(input => {
-            input.addEventListener('change', async () => {
-                if (this.isSection1Complete()) {
-                    await this.captureSection1();
-                }
-            });
-        });
-    }
-
-    setupIntersectionObserver() {
-        const options = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.7
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const section = entry.target;
-                    const sectionNum = section.id.replace('section', '');
-                    this.updateProgress(sectionNum);
-                }
-            });
-        }, options);
-
-        // מעקב אחרי כל הסקשנים
-        document.querySelectorAll('.form-section').forEach(section => {
-            observer.observe(section);
-        });
-    }
-
-    updateProgress(sectionNum) {
-        document.querySelectorAll('.step').forEach(step => {
-            const stepNum = step.dataset.step;
-            if (stepNum <= sectionNum) {
-                step.classList.add('active');
-            }
-        });
-    }
-
-    updateFormData() {
-        const formData = new FormData(this.form);
-        this.formData = Object.fromEntries(formData.entries());
-    }
-
-    isSection1Complete() {
-        const requiredFields = ['firstName', 'lastName', 'idNumber', 'email', 'phone'];
-        return requiredFields.every(field => 
-            this.formData[field] && this.formData[field].trim() !== ''
-        );
-    }
-
-    async captureSection1() {
-        try {
-            console.log('[DEBUG] Capturing section 1');
-            await window.pdfGenerator.captureAndSaveFirstSection(this.formData);
-            this.showMessage('פרטים ראשוניים נשמרו בהצלחה', 'success');
-        } catch (error) {
-            console.error('[ERROR] Failed to capture section 1:', error);
-            this.showMessage('שגיאה בשמירת פרטים ראשוניים', 'error');
+        // Add digital signature if available
+        if (signaturePad && !signaturePad.isEmpty()) {
+            formData.signature = signaturePad.toDataURL();
+        } else {
+            alert("Please provide a digital signature before submitting.");
+            return;
         }
-    }
 
-    async handleSubmit() {
+        const validationResult = validateForm(formData);
+        if (!validationResult.isValid) {
+            displayValidationErrors(validationResult.errors);
+            return;
+        }
+
+        submitButton.disabled = true; // Disable button to prevent multiple submissions
         try {
-            console.log('[DEBUG] Handling form submission');
-            this.updateFormData();
-
-            if (!this.validateForm()) {
-                this.showMessage('יש למלא את כל השדות הנדרשים', 'error');
-                return;
-            }
-
-            this.showLoader();
-
-            // צילום הטופס המלא
-            const formImage = await window.pdfGenerator.captureFullForm();
-            
-            // שמירה בפיירבייס
-            const pdfUrl = await window.pdfGenerator.saveToFirebase(
-                formImage,
-                'complete',
-                this.formData
-            );
-
-            this.showMessage('הטופס נשלח בהצלחה!', 'success');
-            this.clearLocalStorage();
-
-            // הפניה לדף תודה
-            setTimeout(() => {
-                window.location.href = `/thank-you.html?ref=${encodeURIComponent(pdfUrl)}`;
-            }, 2000);
-
+            const response = await submitForm(formData);
+            alert("Form submitted successfully!");
+            console.log("[DEBUG] Form response:", response);
         } catch (error) {
-            console.error('[ERROR] Form submission failed:', error);
-            this.showMessage('שגיאה בשליחת הטופס', 'error');
+            console.error("[ERROR] Form submission failed:", error);
+            alert("Failed to submit the form. Please try again.");
         } finally {
-            this.hideLoader();
+            submitButton.disabled = false;
         }
-    }
+    });
 
-    validateForm() {
-        // בדיקת תקינות בסיסית
-        return this.form.checkValidity();
-    }
-
-    saveToLocalStorage() {
-        localStorage.setItem('formData', JSON.stringify(this.formData));
-    }
-
-    clearLocalStorage() {
-        localStorage.removeItem('formData');
-    }
-
-    showLoader() {
-        const loader = document.createElement('div');
-        loader.className = 'loader';
-        loader.innerHTML = '<div class="spinner"></div>';
-        document.body.appendChild(loader);
-    }
-
-    hideLoader() {
-        const loader = document.querySelector('.loader');
-        if (loader) loader.remove();
-    }
-
-    showMessage(text, type) {
-        const message = document.createElement('div');
-        message.className = `message ${type}`;
-        message.textContent = text;
-        document.body.appendChild(message);
-        setTimeout(() => message.remove(), 3000);
-    }
+    // Autosave feature
+    setupAutosave(form);
 }
 
-// Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('[DEBUG] Initializing form handler');
-    window.formHandler = new FormHandler();
-});
+// Extract form data
+function getFormData(form) {
+    const formData = {};
+    const formElements = form.elements;
+
+    Array.from(formElements).forEach((element) => {
+        if (element.name) {
+            if (element.type === "checkbox") {
+                formData[element.name] = formData[element.name] || [];
+                if (element.checked) {
+                    formData[element.name].push(element.value);
+                }
+            } else if (element.type === "radio") {
+                if (element.checked) {
+                    formData[element.name] = element.value;
+                }
+            } else {
+                formData[element.name] = element.value;
+            }
+        }
+    });
+
+    console.log("[DEBUG] Form data extracted:", formData);
+    return formData;
+}
+
+// Validate the form
+function validateForm(formData) {
+    const validationRules = {
+        fullName: { required: true, minLength: 2 },
+        investmentAmount: { required: true, minValue: 100000 },
+        bank: { required: true },
+        agreementConfirm: { required: true },
+        disclosureConfirm: { required: true }
+    };
+
+    const errors = [];
+    for (const [field, rules] of Object.entries(validationRules)) {
+        const value = formData[field];
+        if (rules.required && !value) {
+            errors.push(`${field} is required.`);
+        }
+        if (rules.minValue && value < rules.minValue) {
+            errors.push(`${field} must be at least ${rules.minValue}.`);
+        }
+        if (rules.minLength && value.length < rules.minLength) {
+            errors.push(`${field} must be at least ${rules.minLength} characters.`);
+        }
+    }
+
+    return { isValid: errors.length === 0, errors };
+}
+
+// Display validation errors
+function displayValidationErrors(errors) {
+    console.warn("[DEBUG] Validation errors:", errors);
+    alert("The form contains the following errors:\n" + errors.join("\n"));
+}
+
+// Submit the form to the server
+async function submitForm(formData) {
+    const response = await fetch("/api/save-form", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to submit the form");
+    }
+
+    return await response.json();
+}
+
+// Setup autosave
+function setupAutosave(form) {
+    const saveIndicator = document.querySelector(".autosave-indicator");
+    let saveTimeout;
+
+    form.addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+            const formData = getFormData(form);
+            localStorage.setItem("autosaveData", JSON.stringify(formData));
+            if (saveIndicator) {
+                saveIndicator.querySelector(".save-time").textContent = new Date().toLocaleTimeString();
+                saveIndicator.style.display = "block";
+            }
+        }, 1000);
+    });
+
+    const savedData = JSON.parse(localStorage.getItem("autosaveData") || "{}");
+    Object.entries(savedData).forEach(([name, value]) => {
+        const field = form.elements[name];
+        if (!field) return;
+
+        if (field.type === "checkbox" || field.type === "radio") {
+            field.checked = value.includes(field.value);
+        } else {
+            field.value = value;
+        }
+    });
+}
+
+// Debugging tool
+function debugFormSubmission(formData) {
+    console.table(formData);
+}
